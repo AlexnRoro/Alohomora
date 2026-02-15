@@ -1,0 +1,26 @@
+{
+  "name": "Alohomora - 英语提升工具",
+  "short_name": "Alohomora",
+  "description": "把中文内容转化为英语训练",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f0f4f0",
+  "theme_color": "#5a7a5a",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "208x124",
+      "type": "image/png"
+    }
+  ],
+  "share_target": {
+    "action": "/",
+    "method": "GET",
+    "enctype": "application/x-www-form-urlencoded",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
+}
