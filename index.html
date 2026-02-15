@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alohomora - 英语提升工具</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#5a7a5a">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #f0f4f0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #3d5a3d;
+            margin-bottom: 10px;
+            font-size: 2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        h1 img {
+            height: 1em;
+            display: block;
+        }
+        
+        
+        h1 svg {
+            height: 1em;
+            display: block;
+        }
+
+h1 img[src=""], h1 img:not([src]) {
+            display: none;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+        
+        .api-key-section {
+            background: #fff9e6;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .api-key-section input {
+            width: calc(100% - 100px);
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.9em;
+            margin-top: 10px;
+            margin-right: 10px;
+        }
+        
+        .api-key-section button {
+            padding: 10px 20px;
+            margin-top: 10px;
+        }
+        
+        .api-key-section button:disabled {
+            opacity: 0.5;
+        }
+        
+        .api-key-section .btn-test {
+            background: #ccc;
+        }
+        
+        .api-key-section .btn-test.active {
+            background: #ff9800;
+        }
+        
+        .api-key-section .btn-test.active:hover {
+            background: #f57c00;
+        }
+        
+        .api-key-section.collapsed {
+            padding: 10px 20px;
+        }
+        
+        .api-key-section.collapsed .api-key-content {
+            display: none;
+        }
+        
+        .api-key-section .toggle-btn {
+            background: transparent;
+            color: #5a7a5a;
+            padding: 5px 10px;
+            margin: 0;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        
+        .api-key-section small {
+            color: #666;
+            display: block;
+            margin-top: 5px;
+        }
+        
+        .api-saved {
+            color: #4caf50;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .upload-section {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #2196f3;
+        }
+        
+        .upload-btn {
+            background: #2196f3;
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+            color: white;
+        }
+        
+        .upload-btn:hover {
+            background: #1976d2;
+        }
+        
+        .mic-btn {
+            background: transparent;
+            display: inline-block;
+            padding: 0;
+            border-radius: 50%;
+            cursor: pointer;
+            margin: 20px auto;
+            text-align: center;
+            transition: all 0.3s;
+            width: 80px;
+            height: 80px;
+            border: 3px solid transparent;
+        }
+        
+        .mic-btn img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+        
+        
+        .mic-btn svg {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            display: block;
+        }
+
+.mic-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .mic-btn.recording {
+            border-color: #f44336;
+            box-shadow: 0 0 20px rgba(244, 67, 54, 0.6);
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+        
+        .step {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+        
+        .step.active { display: block; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .step-title {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #c8d8c8;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            resize: vertical;
+            min-height: 250px;
+            font-family: inherit;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #7a9a7a;
+        }
+        
+        button {
+            background: #5a7a5a;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: #4a6a4a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(90, 122, 90, 0.3);
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .task-card {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .task-card:hover {
+            border-color: #7a9a7a;
+            transform: translateX(5px);
+        }
+        
+        .task-card.selected {
+            border-color: #5a7a5a;
+            background: #e8f0e8;
+        }
+        
+        .task-type {
+            font-weight: bold;
+            color: #3d5a3d;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #5a7a5a;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #5a7a5a;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .scores {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .score-item {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .score-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #5a7a5a;
+        }
+        
+        .improvement {
+            background: #fff9e6;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .reference {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .reference.other-style {
+            background: #f5f5f5;
+            border-left: 4px solid #9e9e9e;
+            color: #666;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            margin-left: 10px;
+        }
+        
+        .play-btn {
+            display: inline-block;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 8px 0 8px 14px;
+            border-color: transparent transparent transparent #4a6a4a;
+            cursor: pointer;
+            margin-left: 10px;
+            vertical-align: middle;
+            transition: all 0.3s;
+        }
+        
+        .play-btn:hover {
+            border-left-color: #3d5a3d;
+            transform: scale(1.1);
+        }
+        
+        @media (max-width: 600px) {
+            .container { padding: 20px; }
+            h1 { font-size: 1.5em; }
+            .scores { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><svg style="height:1em; width:auto; display:block;" role="img" aria-label="Logo" class="logo-inline" xmlns="http://www.w3.org/2000/svg" width="208" height="124" viewBox="0 0 208 124">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="208" y2="124" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#c79f4f"/>
+      <stop offset="0.55" stop-color="#f3e6c6"/>
+      <stop offset="1" stop-color="#b8892e"/>
+    </linearGradient>
+  </defs>
+  <path d="M 26 84 L 26 96 L 32 104 L 37 106 L 45 106 L 51 104 L 59 99 L 69 89 L 83 64 L 93 54 L 99 54 L 105 70 L 107 71 L 106 80 L 100 90 L 93 97 L 89 99 L 79 99 L 74 97 L 77 102 L 82 104 L 91 104 L 104 97 L 109 91 L 113 91 L 114 99 L 108 101 L 108 103 L 135 103 L 136 99 L 140 99 L 146 105 L 158 111 L 172 112 L 181 108 L 181 106 L 166 107 L 157 103 L 141 88 L 136 81 L 136 76 L 148 70 L 156 61 L 158 56 L 157 44 L 153 40 L 143 36 L 126 36 L 112 40 L 106 40 L 98 17 L 89 20 L 89 29 L 86 30 L 82 45 L 71 72 L 64 84 L 56 93 L 45 99 L 40 99 L 35 96 L 33 92 L 33 83 L 40 70 L 36 71 L 30 77 Z M 127 92 L 128 91 L 132 91 L 134 93 L 134 94 L 135 94 L 136 95 L 136 99 L 135 100 L 131 100 L 130 99 L 130 98 L 129 98 L 127 96 Z M 109 46 L 110 45 L 115 45 L 116 46 L 116 50 L 115 51 L 110 51 L 109 50 Z M 88 43 L 89 42 L 93 42 L 94 43 L 94 47 L 93 48 L 89 48 L 88 47 Z M 143 42 L 147 46 L 147 47 L 148 48 L 148 56 L 147 57 L 147 58 L 146 59 L 146 60 L 145 61 L 145 62 L 140 67 L 139 67 L 137 69 L 136 69 L 135 70 L 134 70 L 133 71 L 132 71 L 131 72 L 130 72 L 129 73 L 128 73 L 127 74 L 126 74 L 125 75 L 123 75 L 123 79 L 122 80 L 118 80 L 117 79 L 117 73 L 118 72 L 118 70 L 119 69 L 119 67 L 120 66 L 120 63 L 121 62 L 121 60 L 122 59 L 122 57 L 123 56 L 123 53 L 124 52 L 124 50 L 125 49 L 125 48 L 126 47 L 126 41 L 127 40 L 138 40 L 139 41 L 141 41 L 142 42 Z" fill="url(#gold)" fill-rule="evenodd"/>
+</svg>
+        Alohomora</h1>
+        <p class="subtitle">把中文内容转化为英语训练</p>
+        
+        <!-- API Key 配置 -->
+        <div class="api-key-section" id="apiKeySection">
+            <strong>配置你的 API Key</strong>
+            <button class="toggle-btn" id="toggleApiBtn" onclick="toggleApiSection()" style="float: right; display: none;">收起</button>
+            <div class="api-key-content">
+                <!-- OCR API -->
+                <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #e0e0e0;">
+                    <strong>OCR API (用于图片识别)</strong>
+                    <div style="margin-top: 10px;">
+                        <input type="password" id="ocrApiKey" placeholder="OCR.space API Key" oninput="onOcrKeyInput()" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; margin-bottom: 10px;">
+                        <button onclick="testOcrKey()" class="btn-secondary btn-test" id="testOcrBtn" disabled>测试</button>
+                        <button onclick="saveOcrKey()" id="saveOcrBtn">保存</button>
+                        <span id="ocrSavedMsg" class="api-saved" style="display:none;">✓ 已保存</span>
+                        <span id="ocrTestMsg" style="margin-left: 10px; display:none;"></span>
+                    </div>
+                    <small><a href="https://ocr.space/ocrapi" target="_blank">获取免费 OCR.space API Key</a></small>
+                </div>
+                
+                <!-- LLM API -->
+                <div>
+                    <strong>LLM API (用于任务生成和反馈)</strong>
+                    <div style="margin-top: 10px;">
+                        <select id="apiProvider" style="width: 100%; padding: 10px; border-radius: 8px; margin-bottom: 10px;">
+                            <option value="groq">Groq API</option>
+                            <option value="grok">Grok (X.AI)</option>
+                            <option value="openai">OpenAI</option>
+                        </select>
+                        <input type="password" id="apiKeyInput" placeholder="输入你的 LLM API Key" oninput="onApiKeyInput()" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; margin-bottom: 10px;">
+                        <button onclick="testApiKey()" class="btn-secondary btn-test" id="testBtn" disabled>测试</button>
+                        <button onclick="saveApiKey()" id="saveBtn">保存</button>
+                        <span id="apiSavedMsg" class="api-saved" style="display:none;">✓ 已保存</span>
+                        <span id="apiTestMsg" style="margin-left: 10px; display:none;"></span>
+                    </div>
+                    <small>
+                        没有 API Key? 
+                        <a href="https://console.groq.com/" target="_blank">Groq</a> | 
+                        <a href="https://console.x.ai/" target="_blank">Grok</a> | 
+                        <a href="https://platform.openai.com/" target="_blank">OpenAI</a>
+                    </small>
+                </div>
+                <small style="display: block; margin-top: 10px;">你的 API Key 只保存在浏览器本地，不会上传到任何服务器</small>
+            </div>
+        </div>
+        
+        <!-- Step 1: 输入中文 -->
+        <div id="step1" class="step active">
+            <div class="step-title">步骤 1: 输入中文内容</div>
+            
+            <!-- 上传截图 -->
+            <div class="upload-section">
+                <strong>上传截图（自动识别文字）</strong>
+                <label for="imageUpload" class="upload-btn">选择图片</label>
+                <input type="file" id="imageUpload" accept="image/*" onchange="handleImageUpload(event)">
+                <div id="uploadStatus" style="margin-top: 10px; color: #666;"></div>
+            </div>
+            
+            <!-- 或直接粘贴 -->
+            <div style="text-align: center; margin: 15px 0; color: #999;">或</div>
+            
+            <textarea id="chineseInput" placeholder="直接粘贴中文内容...&#10;&#10;例如：今天看了一部超好看的电影，讲的是一个程序员通过时间旅行改变了自己的命运。剧情紧凑，演员演技在线，强烈推荐！"></textarea>
+            <button onclick="generateTasks()">生成训练任务 →</button>
+        </div>
+        
+        <!-- Step 2: 选择任务 -->
+        <div id="step2" class="step">
+            <div class="step-title">步骤 2: 选择一个任务</div>
+            <div id="tasksList"></div>
+            <button onclick="startOutput()" id="startBtn" disabled>开始输出 →</button>
+            <button class="btn-secondary" onclick="goToStep(1)">← 返回</button>
+        </div>
+        
+        <!-- Step 3: 完成输出 -->
+        <div id="step3" class="step">
+            <div class="step-title">步骤 3: 用英文完成任务</div>
+            <div id="taskInfo" style="background: #f8f9ff; padding: 15px; border-radius: 10px; margin-bottom: 15px;"></div>
+            
+            <!-- Retell 任务显示录音按钮 -->
+            <div id="voiceInputSection" style="display: none; text-align: center;">
+                <div class="mic-btn" id="micBtn" onclick="toggleRecording()">
+                    <svg style="width:100%; height:100%; display:block;" role="img" aria-label="Record" class="mic-inline" xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="80" y1="120" x2="432" y2="392" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6DD6D2"/>
+      <stop offset="1" stop-color="#B58AE0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="220" fill="url(#bg)"/>
+
+  <!-- Microphone icon (white) -->
+  <g fill="#FFFFFF">
+    <!-- Mic capsule -->
+    <rect x="198" y="120" width="116" height="200" rx="58" ry="58"/>
+    <!-- Inner cutout -->
+    <rect x="224" y="148" width="64" height="144" rx="32" ry="32" fill="url(#bg)" opacity="0.25"/>
+    <!-- U-shape arms -->
+    <path d="M176 252c0 44.2 35.8 80 80 80h0c44.2 0 80-35.8 80-80v-28c0-10.5 8.5-19 19-19s19 8.5 19 19v28c0 59.5-42.1 109.1-98 120.5V412h58c10.5 0 19 8.5 19 19s-8.5 19-19 19H178c-10.5 0-19-8.5-19-19s8.5-19 19-19h58v-39.5c-55.9-11.4-98-61-98-120.5v-28c0-10.5 8.5-19 19-19s19 8.5 19 19v28z"/>
+    <!-- Base stand -->
+    <rect x="176" y="420" width="160" height="36" rx="18" ry="18"/>
+  </g>
+</svg>
+                    </div>
+                <div id="recordingStatus" style="margin: 10px 0; color: #666;"></div>
+                <div style="margin: 10px 0; color: #999;">或</div>
+            </div>
+            
+            <textarea id="englishOutput" placeholder="用英文完成这个任务..."></textarea>
+            <button onclick="submitOutput()">获取反馈 →</button>
+            <button class="btn-secondary" onclick="goToStep(2)">← 返回</button>
+        </div>
+        
+        <!-- Step 4: 查看反馈 -->
+        <div id="step4" class="step">
+            <div class="step-title">步骤 4: AI 教练反馈</div>
+            <div id="feedbackContent"></div>
+            <button onclick="retryTask()">修改后重试</button>
+            <button onclick="goToStep(1)">开始新练习</button>
+        </div>
+        
+        <!-- Loading -->
+        <div id="loading" class="step">
+            <div class="loading">
+                <div class="spinner"></div>
+                <div>AI 正在处理中...</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let apiKey = localStorage.getItem('api_key') || '';
+        let apiProvider = localStorage.getItem('api_provider') || 'groq';
+        let ocrApiKey = localStorage.getItem('ocr_api_key') || '';
+        let chineseText = '';
+        let tasks = [];
+        let selectedTask = null;
+        let lastUserOutput = '';
+        
+        // 处理分享内容
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const sharedText = urlParams.get('text') || urlParams.get('title');
+            if (sharedText) {
+                document.getElementById('chineseInput').value = sharedText;
+                window.history.replaceState({}, document.title, '/');
+            }
+            
+            // 注册 Service Worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js').catch(() => {});
+            }
+        });
+        
+        // 加载保存的 API Key
+        if (apiKey) {
+            document.getElementById('apiKeyInput').value = apiKey;
+            document.getElementById('apiSavedMsg').style.display = 'inline';
+            document.getElementById('testBtn').disabled = false;
+            document.getElementById('testBtn').classList.add('active');
+        }
+        if (apiProvider) {
+            document.getElementById('apiProvider').value = apiProvider;
+        }
+        if (ocrApiKey) {
+            document.getElementById('ocrApiKey').value = ocrApiKey;
+            document.getElementById('ocrSavedMsg').style.display = 'inline';
+            document.getElementById('testOcrBtn').disabled = false;
+            document.getElementById('testOcrBtn').classList.add('active');
+        }
+        if (apiKey || ocrApiKey) {
+            document.getElementById('toggleApiBtn').style.display = 'inline-block';
+        }
+        
+        // API Key 输入时启用测试按钮
+        function onApiKeyInput() {
+            const input = document.getElementById('apiKeyInput').value.trim();
+            const testBtn = document.getElementById('testBtn');
+            if (input) {
+                testBtn.disabled = false;
+                testBtn.classList.add('active');
+            } else {
+                testBtn.disabled = true;
+                testBtn.classList.remove('active');
+            }
+        }
+        
+        function onOcrKeyInput() {
+            const input = document.getElementById('ocrApiKey').value.trim();
+            const testBtn = document.getElementById('testOcrBtn');
+            if (input) {
+                testBtn.disabled = false;
+                testBtn.classList.add('active');
+            } else {
+                testBtn.disabled = true;
+                testBtn.classList.remove('active');
+            }
+        }
+        
+        // 折叠/展开 API 配置区域
+        function toggleApiSection() {
+            const section = document.getElementById('apiKeySection');
+            const btn = document.getElementById('toggleApiBtn');
+            section.classList.toggle('collapsed');
+            btn.textContent = section.classList.contains('collapsed') ? '展开' : '收起';
+        }
+        
+        // 测试 API Key
+        async function testApiKey() {
+            const testKey = document.getElementById('apiKeyInput').value.trim();
+            const testProvider = document.getElementById('apiProvider').value;
+            const msgSpan = document.getElementById('apiTestMsg');
+            
+            if (!testKey) {
+                alert('请先输入 API Key');
+                return;
+            }
+            
+            msgSpan.textContent = '测试中...';
+            msgSpan.style.color = '#666';
+            msgSpan.style.display = 'inline';
+            
+            try {
+                let url, body;
+                
+                if (testProvider === 'groq') {
+                    url = 'https://api.groq.com/openai/v1/chat/completions';
+                    body = {
+                        model: 'llama-3.3-70b-versatile',
+                        messages: [{ role: 'user', content: 'Say hello' }],
+                        max_tokens: 10
+                    };
+                } else if (testProvider === 'grok') {
+                    url = 'https://api.x.ai/v1/chat/completions';
+                    body = {
+                        model: 'grok-beta',
+                        messages: [{ role: 'user', content: 'Say hello' }],
+                        max_tokens: 10
+                    };
+                } else {
+                    url = 'https://api.openai.com/v1/chat/completions';
+                    body = {
+                        model: 'gpt-3.5-turbo',
+                        messages: [{ role: 'user', content: 'Say hello' }],
+                        max_tokens: 10
+                    };
+                }
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${testKey}`
+                    },
+                    body: JSON.stringify(body)
+                });
+                
+                if (response.ok) {
+                    msgSpan.textContent = '✓ API Key 有效';
+                    msgSpan.style.color = '#4caf50';
+                    document.getElementById('toggleApiBtn').style.display = 'inline-block';
+                    setTimeout(() => msgSpan.style.display = 'none', 3000);
+                } else {
+                    const error = await response.json().catch(() => ({}));
+                    msgSpan.textContent = '✗ ' + (error.error?.message || 'API Key 无效');
+                    msgSpan.style.color = '#f44336';
+                }
+            } catch (error) {
+                msgSpan.textContent = '✗ 测试失败: ' + error.message;
+                msgSpan.style.color = '#f44336';
+            }
+        }
+        
+        // 保存 API Key
+        function saveApiKey() {
+            apiKey = document.getElementById('apiKeyInput').value.trim();
+            apiProvider = document.getElementById('apiProvider').value;
+            if (!apiKey) {
+                alert('请输入 API Key');
+                return;
+            }
+            localStorage.setItem('api_key', apiKey);
+            localStorage.setItem('api_provider', apiProvider);
+            const msg = document.getElementById('apiSavedMsg');
+            msg.style.display = 'inline';
+            document.getElementById('toggleApiBtn').style.display = 'inline-block';
+        }
+        
+        function saveOcrKey() {
+            ocrApiKey = document.getElementById('ocrApiKey').value.trim();
+            if (!ocrApiKey) {
+                alert('请输入 OCR API Key');
+                return;
+            }
+            localStorage.setItem('ocr_api_key', ocrApiKey);
+            const msg = document.getElementById('ocrSavedMsg');
+            msg.style.display = 'inline';
+            document.getElementById('toggleApiBtn').style.display = 'inline-block';
+        }
+        
+        async function testOcrKey() {
+            const testKey = document.getElementById('ocrApiKey').value.trim();
+            const msgSpan = document.getElementById('ocrTestMsg');
+            
+            if (!testKey) {
+                alert('请先输入 OCR API Key');
+                return;
+            }
+            
+            msgSpan.textContent = '测试中...';
+            msgSpan.style.color = '#666';
+            msgSpan.style.display = 'inline';
+            
+            try {
+                // 使用 base64 编码的测试图片（简单的 "Test" 文字图片）
+                const testImageBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mNk+M9Qz0AEYBxVSF+FABJADveWkH6oAAAAAElFTkSuQmCC';
+                
+                const formData = new FormData();
+                formData.append('base64Image', testImageBase64);
+                formData.append('language', 'eng');
+                
+                const response = await fetch('https://api.ocr.space/parse/image', {
+                    method: 'POST',
+                    headers: {
+                        'apikey': testKey
+                    },
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.OCRExitCode === 1 || data.IsErroredOnProcessing === false) {
+                    msgSpan.textContent = '✓ API Key 有效';
+                    msgSpan.style.color = '#4caf50';
+                    setTimeout(() => msgSpan.style.display = 'none', 3000);
+                } else {
+                    msgSpan.textContent = '✗ ' + (data.ErrorMessage || 'API Key 无效');
+                    msgSpan.style.color = '#f44336';
+                }
+            } catch (error) {
+                msgSpan.textContent = '✗ 测试失败: ' + error.message;
+                msgSpan.style.color = '#f44336';
+            }
+        }
+        
+        function goToStep(step) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById('step' + step).classList.add('active');
+        }
+        
+        function showLoading() {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById('loading').classList.add('active');
+        }
+        
+        async function callAPI(prompt) {
+            if (!apiKey) {
+                alert('请先配置并保存 API Key');
+                return null;
+            }
+            
+            try {
+                let url, body;
+                
+                if (apiProvider === 'groq') {
+                    url = 'https://api.groq.com/openai/v1/chat/completions';
+                    body = {
+                        model: 'llama-3.3-70b-versatile',
+                        messages: [{ role: 'user', content: prompt }],
+                        temperature: 0.7,
+                        max_tokens: 2000
+                    };
+                } else if (apiProvider === 'grok') {
+                    url = 'https://api.x.ai/v1/chat/completions';
+                    body = {
+                        model: 'grok-beta',
+                        messages: [
+                            { role: 'system', content: 'You are a helpful assistant.' },
+                            { role: 'user', content: prompt }
+                        ],
+                        temperature: 0.7,
+                        max_tokens: 2000
+                    };
+                } else { // openai
+                    url = 'https://api.openai.com/v1/chat/completions';
+                    body = {
+                        model: 'gpt-3.5-turbo',
+                        messages: [{ role: 'user', content: prompt }],
+                        temperature: 0.7,
+                        max_tokens: 2000
+                    };
+                }
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify(body)
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    console.error('API Error:', errorData);
+                    throw new Error(
+                        errorData.error?.message || 
+                        `API 调用失败 (${response.status})。请检查：\n1. API Key 是否正确\n2. 是否有足够的额度\n3. 网络连接是否正常`
+                    );
+                }
+                
+                const data = await response.json();
+                if (!data.choices || !data.choices[0]) {
+                    throw new Error('API 返回数据格式错误');
+                }
+                
+                return data.choices[0].message.content;
+            } catch (error) {
+                console.error('API Call Error:', error);
+                throw error;
+            }
+        }
+        
+        // 处理图片上传和 OCR
+        async function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (!ocrApiKey) {
+                alert('请先配置并保存 OCR API Key');
+                return;
+            }
+            
+            const status = document.getElementById('uploadStatus');
+            status.textContent = '正在识别文字...';
+            status.style.color = '#666';
+            
+            try {
+                // 使用 OCR.space API
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('language', 'chs');
+                formData.append('isOverlayRequired', 'false');
+                
+                const response = await fetch('https://api.ocr.space/parse/image', {
+                    method: 'POST',
+                    headers: {
+                        'apikey': ocrApiKey
+                    },
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.OCRExitCode === 1 && data.ParsedResults && data.ParsedResults.length > 0) {
+                    const text = data.ParsedResults[0].ParsedText;
+                    document.getElementById('chineseInput').value = text;
+                    status.textContent = '✓ 识别完成！';
+                    status.style.color = '#4caf50';
+                } else {
+                    throw new Error(data.ErrorMessage || 'OCR 识别失败');
+                }
+            } catch (error) {
+                console.error('OCR Error:', error);
+                status.textContent = '识别失败: ' + error.message;
+                status.style.color = '#f44336';
+            }
+        }
+        
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        async function generateTasks() {
+            chineseText = document.getElementById('chineseInput').value.trim();
+            if (!chineseText) {
+                alert('请输入中文内容');
+                return;
+            }
+            
+            // 直接生成三个任务，不需要 API
+            const sentences = chineseText.split(/[。！？…]+/).filter(s => s.trim());
+            const keyPoints = sentences.slice(0, 5).map(s => s.trim().substring(0, 50));
+            
+            tasks = [
+                { 
+                    task_type: 'retell',
+                    key_points: keyPoints.length > 0 ? keyPoints : ['主要内容', '关键信息', '总结观点']
+                },
+                { 
+                    task_type: 'rewrite',
+                    key_points: keyPoints.length > 0 ? keyPoints : ['主要内容', '关键信息', '总结观点']
+                },
+                { 
+                    task_type: 'style_shift',
+                    key_points: keyPoints.length > 0 ? keyPoints : ['主要内容', '关键信息', '总结观点'],
+                    target_register: null
+                }
+            ];
+            
+            displayTasks();
+            goToStep(2);
+        }
+        
+        function displayTasks() {
+            const tasksList = document.getElementById('tasksList');
+            const taskNames = {
+                'retell': 'Retell (口语复述)',
+                'rewrite': 'Rewrite (写作改写)',
+                'style_shift': 'Style Shift (语域切换)'
+            };
+            
+            const taskDescriptions = {
+                'retell': '用自己的话口语复述中文内容',
+                'rewrite': '用英文改写中文内容',
+                'style_shift': '用不同语域风格表达中文内容'
+            };
+            
+            tasksList.innerHTML = tasks.map((task, index) => `
+                <div class="task-card" onclick="selectTask(${index})">
+                    <div class="task-type">${taskNames[task.task_type]}</div>
+                    <div style="color: #666; margin-bottom: 8px;">${taskDescriptions[task.task_type]}</div>
+                    <div class="task-points">
+                        要点: ${task.key_points.slice(0, 3).join(', ')}...
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function selectTask(index) {
+            selectedTask = tasks[index];
+            document.querySelectorAll('.task-card').forEach((card, i) => {
+                card.classList.toggle('selected', i === index);
+            });
+            startOutput();
+        }
+        
+        function startOutput() {
+            if (!selectedTask) return;
+            
+            document.getElementById('englishOutput').value = '';
+            
+            const taskInfo = document.getElementById('taskInfo');
+            let taskContent = '';
+            
+            if (selectedTask.task_type === 'style_shift' && !selectedTask.target_register) {
+                taskContent = `<strong>任务类型:</strong> Style Shift<br><br>`;
+                taskContent += `<strong>请选择你要练习的风格:</strong><br>`;
+                taskContent += `<select id="styleSelect" style="width: 100%; padding: 10px; margin: 10px 0; border-radius: 8px;">`;
+                taskContent += `<option value="">-- 选择风格 --</option>`;
+                taskContent += `<option value="casual">Casual</option>`;
+                taskContent += `<option value="formal">Formal</option>`;
+                taskContent += `<option value="professional">Professional</option>`;
+                taskContent += `<option value="academic">Academic</option>`;
+                taskContent += `</select>`;
+                taskContent += `<button onclick="confirmStyle()">确认风格</button>`;
+                taskInfo.innerHTML = taskContent;
+                goToStep(3);
+                return;
+            }
+            
+            taskContent = `<strong>任务类型:</strong> ${selectedTask.task_type}`;
+            if (selectedTask.task_type === 'style_shift') {
+                taskContent += ` (目标: ${selectedTask.target_register})`;
+            }
+            taskContent += `<br>`;
+            
+            taskContent += `<strong>中文原文:</strong><br><div style="background: white; padding: 10px; border-radius: 5px; margin: 10px 0;">${chineseText}</div>`;
+            
+            if (selectedTask.task_type === 'retell') {
+                taskContent += `<strong>要覆盖的要点:</strong><br>
+                    ${selectedTask.key_points.map(p => `• ${p}`).join('<br>')}`;
+            }
+            
+            taskInfo.innerHTML = taskContent;
+            
+            const voiceSection = document.getElementById('voiceInputSection');
+            if (selectedTask.task_type === 'retell') {
+                voiceSection.style.display = 'block';
+            } else {
+                voiceSection.style.display = 'none';
+            }
+            
+            goToStep(3);
+        }
+        
+        function confirmStyle() {
+            const style = document.getElementById('styleSelect').value;
+            if (!style) {
+                alert('请选择一个风格');
+                return;
+            }
+            selectedTask.target_register = style;
+            startOutput();
+        }
+        
+        // 录音功能
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
+        let recordingStartTime = 0;
+        let recordingDuration = 0;
+        
+        async function toggleRecording() {
+            if (!isRecording) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    recordingStartTime = Date.now();
+                    
+                    mediaRecorder.ondataavailable = (event) => {
+                        audioChunks.push(event.data);
+                    };
+                    
+                    mediaRecorder.onstop = async () => {
+                        recordingDuration = (Date.now() - recordingStartTime) / 1000;
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        await transcribeAudio(audioBlob);
+                    };
+                    
+                    mediaRecorder.start();
+                    isRecording = true;
+                    
+                    document.getElementById('micBtn').classList.add('recording');
+                    document.getElementById('recordingStatus').textContent = '正在录音...点击停止';
+                } catch (error) {
+                    alert('无法访问麦克风: ' + error.message);
+                }
+            } else {
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                isRecording = false;
+                
+                document.getElementById('micBtn').classList.remove('recording');
+                document.getElementById('recordingStatus').textContent = '正在转写...';
+            }
+        }
+        
+        async function transcribeAudio(audioBlob) {
+            try {
+                const formData = new FormData();
+                formData.append('file', audioBlob, 'recording.webm');
+                formData.append('model', 'whisper-large-v3');
+                
+                const response = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`转写失败: ${response.status} - ${errorText}`);
+                }
+                
+                const data = await response.json();
+                const transcribedText = data.text;
+                document.getElementById('englishOutput').value = transcribedText;
+                
+                const wordCount = transcribedText.split(/\s+/).length;
+                const wpm = Math.round((wordCount / recordingDuration) * 60);
+                
+                let fluencyNote = '';
+                if (wpm < 100) fluencyNote = '语速较慢';
+                else if (wpm <= 150) fluencyNote = '语速正常';
+                else fluencyNote = '语速较快';
+                
+                document.getElementById('recordingStatus').textContent = `✓ 转写完成！时长: ${recordingDuration.toFixed(1)}秒 | 语速: ${wpm} WPM (${fluencyNote})`;
+                document.getElementById('recordingStatus').style.color = '#4caf50';
+            } catch (error) {
+                console.error('Transcription error:', error);
+                document.getElementById('recordingStatus').textContent = '转写失败: ' + error.message;
+                document.getElementById('recordingStatus').style.color = '#f44336';
+            }
+        }
+        
+        // TTS 朗读功能
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                utterance.pitch = 1.0;
+                speechSynthesis.speak(utterance);
+            } else {
+                alert('您的浏览器不支持语音合成功能');
+            }
+        }
+        
+        async function submitOutput() {
+            const outputText = document.getElementById('englishOutput').value.trim();
+            if (!outputText) {
+                alert('请输入你的英文输出');
+                return;
+            }
+            
+            if (!apiKey) {
+                alert('请先配置并保存 API Key');
+                return;
+            }
+            
+            showLoading();
+            
+            try {
+                let prompt = '';
+                const wordCount = outputText.split(/\s+/).length;
+                
+                if (selectedTask.task_type === 'retell') {
+                    prompt = `You are an expert English coach for Chinese learners. Evaluate this oral retelling.
+
+**Original Chinese:**
+${chineseText}
+
+**User's Retelling:**
+"${outputText}"
+(${wordCount} words)
+
+**EVALUATION CRITERIA:**
+
+1. **Naturalness** (口语自然度)
+   - Does it sound like spontaneous speech or memorized text?
+   - Are there Chinese-English patterns (e.g., overuse of "because", "so", "and then")?
+   - Is the phrasing conversational?
+
+2. **Grammar & Word Choice**
+   - Critical errors that block understanding
+   - Unnatural collocations (e.g., "open the light" instead of "turn on the light")
+   - Article/preposition/tense issues
+
+3. **Key Points Coverage**
+   - Which key ideas from the Chinese text were covered?
+   - What's missing?
+
+4. **Spoken English Quality**
+   - Sentence length appropriate for speech (not too complex)
+   - Use of natural connectors (well, so, actually, I mean)
+   - Vocabulary level (too formal/bookish vs appropriately casual)
+
+**STRICT RULES:**
+- Meaningless input ("12345", random words): ALL scores 0-2
+- Too short (<20% of original): scores 1-3
+- Major grammar errors: grammar score ≤4
+- Direct translation without adaptation: naturalness ≤3
+
+**FEEDBACK STRUCTURE:**
+For each improvement:
+- Quote EXACT problematic text
+- Explain WHY it's unnatural (compare to native speaker habits)
+- Provide fix with CONTEXT (not just isolated correction)
+- Add "Why natives say it this way" explanation
+
+**OUTPUT FORMAT (valid JSON only):**
+{
+  "top_improvements": [
+    {
+      "issue": "[exact quote] - [problem type]",
+      "suggestion": "[corrected version]",
+      "reason": "[Why wrong + Why natives say it differently]"
+    }
+  ],
+  "reference_version_1": "[Natural conversational English]",
+  "reference_version_2": "[Concise natural version]",
+  "overall_scores": {
+    "naturalness": 5,
+    "grammar": 5,
+    "coverage": 5,
+    "vocabulary": 5
+  }
+}`;
+                } else if (selectedTask.task_type === 'rewrite') {
+                    prompt = `You are an expert English writing coach for Chinese learners. Evaluate this rewriting.
+
+**Original Chinese:**
+${chineseText}
+
+**User's Rewriting:**
+"${outputText}"
+(${wordCount} words)
+
+**EVALUATION CRITERIA:**
+
+1. **Sentence Structure & Logic**
+   - Are sentences too long/complex (Chinese-style)?
+   - Is the logical flow clear?
+   - Variety in sentence patterns (simple/compound/complex)
+
+2. **Grammar & Meaning Preservation**
+   - Grammatical accuracy
+   - Does it convey the original meaning accurately?
+   - Unnatural word order or constructions
+
+3. **Vocabulary & Collocation**
+   - Word choice appropriateness
+   - Natural collocations vs direct translations
+   - Repetition vs synonym usage
+   - Register consistency (formal/informal)
+
+4. **Coherence & Flow**
+   - Transitions between ideas
+   - Paragraph structure (if applicable)
+   - Pronoun reference clarity
+
+**CHINESE-ENGLISH PATTERNS TO FLAG:**
+- Overuse of passive voice
+- "Although...but", "Because...so" constructions
+- Literal translations of Chinese idioms
+- Overly complex sentences (trying to fit everything in one sentence)
+- Missing articles or wrong prepositions
+
+**STRICT RULES:**
+- Meaningless/random input: ALL scores 0-2
+- Too short (<30% of original content): scores 1-3
+- Major grammar errors: grammar score ≤4
+- Multiple Chinese-English patterns: style score ≤4
+
+**FEEDBACK STRUCTURE:**
+For each improvement:
+- Quote EXACT text with issue
+- Identify pattern (grammar/word choice/structure/Chinese-English)
+- Explain WHY it's problematic
+- Provide corrected version
+- Add insight: "In English writing, we..."
+
+**OUTPUT FORMAT (valid JSON only):**
+{
+  "top_improvements": [
+    {
+      "issue": "[exact quote] - [problem type]",
+      "suggestion": "[corrected version]",
+      "reason": "[Why problematic + English writing principle + How to avoid this pattern]"
+    }
+  ],
+  "reference_version_1": "[Well-structured, clear English - good writing]",
+  "reference_version_2": "[Professional-level English - publication quality]",
+  "overall_scores": {
+    "structure": 5,
+    "grammar": 5,
+    "vocabulary": 5,
+    "coherence": 5
+  }
+}`;
+                } else {
+                    const target = selectedTask.target_register;
+                    prompt = `You are an expert English register/style coach for Chinese learners. Evaluate this style shift to **${target}**.
+
+**Original Chinese:**
+${chineseText}
+
+**Target Register:** ${target}
+
+**User's Attempt:**
+"${outputText}"
+(${wordCount} words)
+
+**FIRST: Provide 2 contrasting style examples (NOT ${target})**
+Show how the SAME content would be expressed in 2 OTHER registers to help learner understand differences.
+
+**THEN EVALUATE USER'S ${target} ATTEMPT:**
+
+**Style Markers to Check:**
+
+1. **Vocabulary Level**
+   - Casual: contractions, phrasal verbs, simple words (get, make, do)
+   - Formal: full forms, Latinate verbs, precise terminology (obtain, construct, execute)
+   - Professional: industry-appropriate terms, clear but not overly stiff
+   - Academic: technical terms, hedging language (may, could, appears to)
+
+2. **Sentence Structure**
+   - Casual: short, fragmented OK, starts with And/But
+   - Formal: complete sentences, complex structures, no fragments
+   - Professional: balanced - clear but sophisticated
+   - Academic: longer, subordinate clauses, passive voice acceptable
+
+3. **Tone & Directness**
+   - Casual: direct, personal pronouns (I, you), exclamations
+   - Formal: impersonal, third person, restrained
+   - Professional: polite directness, inclusive (we)
+   - Academic: objective, hedged claims, citation-ready
+
+4. **Consistency**
+   - Does the ENTIRE text maintain the target register?
+   - Are there jarring shifts (e.g., "gonna" in formal writing)?
+
+**STRICT RULES:**
+- Meaningless input: ALL scores 0-2
+- Completely wrong register (casual when formal needed): style_accuracy ≤3
+- Mixed registers inconsistently: consistency ≤4
+- Grammar errors still matter regardless of style
+
+**FEEDBACK STRUCTURE:**
+For each improvement:
+- Quote EXACT text
+- Identify register mismatch ("This is too casual/formal for ${target}")
+- Explain WHY it doesn't fit ${target}
+- Provide ${target}-appropriate alternative
+- Show the CONTRAST: "In casual English you'd say X, but in ${target} we say Y"
+
+**OUTPUT FORMAT (valid JSON only):**
+{
+  "other_styles": {
+    "[style1]": "[version in style1]",
+    "[style2]": "[version in style2]"
+  },
+  "top_improvements": [
+    {
+      "issue": "[exact quote] - [too casual/formal/inconsistent]",
+      "suggestion": "[${target}-appropriate version]",
+      "reason": "[Why this doesn't fit ${target} + What makes the suggestion better + Register principle]"
+    }
+  ],
+  "reference_version_1": "[Good ${target} version]",
+  "reference_version_2": "[Excellent ${target} version - perfect register control]",
+  "overall_scores": {
+    "style_accuracy": 5,
+    "grammar": 5,
+    "vocabulary": 5,
+    "consistency": 5
+  }
+}`;
+                }
+                
+                const response = await callAPI(prompt);
+                let jsonStr = response.trim();
+                if (jsonStr.startsWith('```')) {
+                    jsonStr = jsonStr.replace(/```json\n?/g, '').replace(/```\n?/g, '');
+                }
+                
+                const feedback = JSON.parse(jsonStr);
+                lastUserOutput = outputText;
+                displayFeedback(feedback);
+                goToStep(4);
+            } catch (error) {
+                console.error('Submit output error:', error);
+                alert('获取反馈失败: ' + error.message);
+                goToStep(3);
+            }
+        }
+        
+        function displayFeedback(feedback) {
+            const content = document.getElementById('feedbackContent');
+            
+            let scoresHtml = '<div class="scores">';
+            const scores = feedback.overall_scores;
+            const labelMap = {
+                'naturalness': '口语自然度', 'grammar': '语法', 'coverage': '要点覆盖', 'vocabulary': '词汇',
+                'structure': '句子结构', 'coherence': '连贯性',
+                'style_accuracy': '风格准确度', 'consistency': '一致性',
+                // 兼容旧版
+                'fluency': '流畅度', 'accuracy': '准确度', 'completeness': '完整度',
+                'pronunciation': '发音', 'clarity': '清晰度', 'style': '文体'
+            };
+            for (const [key, value] of Object.entries(scores)) {
+                scoresHtml += `<div class="score-item"><div class="score-label">${labelMap[key] || key}</div><div class="score-value">${value}/10</div></div>`;
+            }
+            scoresHtml += '</div>';
+            
+            const improvementsHtml = feedback.top_improvements.map((imp, i) => `
+                <div class="improvement">
+                    <div class="improvement-title">${i + 1}. ${imp.issue}</div>
+                    <div><strong>建议:</strong> ${imp.suggestion}</div>
+                    <div><strong>原因:</strong> ${imp.reason}</div>
+                </div>
+            `).join('');
+            
+            const referencesHtml = `
+                <div class="reference">
+                    <div class="reference-title">参考版本 1 <span class="play-btn" onclick="speakText('${feedback.reference_version_1.replace(/'/g, "\\'")}')"></span></div>
+                    <div>${feedback.reference_version_1}</div>
+                </div>
+                <div class="reference">
+                    <div class="reference-title">参考版本 2 <span class="play-btn" onclick="speakText('${feedback.reference_version_2.replace(/'/g, "\\'")}')"></span></div>
+                    <div>${feedback.reference_version_2}</div>
+                </div>
+            `;
+            
+            let otherStylesHtml = '';
+            if (feedback.other_styles) {
+                otherStylesHtml = '<h3>其他风格参考</h3>';
+                for (const [styleName, styleText] of Object.entries(feedback.other_styles)) {
+                    otherStylesHtml += `<div class="reference other-style"><div class="reference-title">${styleName} <span class="play-btn" onclick="speakText('${styleText.replace(/'/g, "\\'")}')"></span></div><div>${styleText}</div></div>`;
+                }
+            }
+            
+            content.innerHTML = scoresHtml + '<h3>具体改进点</h3>' + improvementsHtml + '<h3>参考版本</h3>' + referencesHtml + otherStylesHtml;
+        }
+        
+        function retryTask() {
+            document.getElementById('englishOutput').value = lastUserOutput;
+            goToStep(3);
+        }
+    </script>
+</body>
+</html>
